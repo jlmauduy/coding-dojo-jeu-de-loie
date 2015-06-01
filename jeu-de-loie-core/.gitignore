@@ -1,0 +1,35 @@
+o
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+
+# Eclipse Core
+.project
+.classpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# maven specific
+target/
+
+# xtext specific
+src-gen/
+xtend-gen/
+
+#IDEA
+.idea/
+*.iml

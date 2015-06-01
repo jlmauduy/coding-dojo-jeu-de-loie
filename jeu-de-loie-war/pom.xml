@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+<parent>
+    <groupId>com.thales.coding-dojo</groupId>
+    <artifactId>jeu-de-loie-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+	<artifactId>jeu-de-loie-war</artifactId>
+	<name>jeu-de-loie-war Jersey Webapp</name>
+	<description>app du jeu de l'oie</description>
+	<packaging>war</packaging>
+
+	<dependencies>
+			<dependency>
+				<groupId>coding-dojo</groupId>
+				<artifactId>jeu-de-loie-core</artifactId>
+			</dependency>
+
+			<!-- REST -->
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-server</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-json</artifactId>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-client</artifactId>
+			</dependency>
+
+			<!-- JEE -->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-web-api</artifactId>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</dependency>
+
+<!-- 			<dependency> -->
+<!-- 				<groupId>org.slf4j</groupId> -->
+<!-- 				<artifactId>slf4j-log4j12</artifactId> -->
+<!-- 			</dependency> -->
+
+
+			<!-- TEST -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<scope>test</scope>
+			</dependency>
+	</dependencies>
+</project>
