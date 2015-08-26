@@ -2,6 +2,7 @@ package com.thalesgroup.jeu;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,10 +26,16 @@ import jeuDeLoie.Joueur;
 public class MyResource {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{pseudo}")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    // @Path("/{pseudo}")
     public Joueur getPlayer(@PathParam("pseudo") String pseudo) {
         return JeuDelOie.getInstance().getJoueurFromPseudo(pseudo);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Joueur> getPlayers() {
+        return JeuDelOie.getInstance().getJoueurs();
     }
 
     @POST
@@ -39,8 +46,9 @@ public class MyResource {
 
         jeuDeLoie.addJoueur(pseudo);
 
-        return Response.created(new URI(pseudo)).build();
+        return Response.created(new URI("/jeu-de-loie-webapp/webresources/joueurs/" + pseudo)).build();
     }
+
     // @POST
     // @Produces("text/plain")
     // @Path("/joueurs/{monParam}")
