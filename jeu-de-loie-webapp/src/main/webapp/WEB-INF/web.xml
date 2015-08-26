@@ -9,7 +9,7 @@
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>javax.ws.rs.Application</param-name>
-			<param-value>com.thalesgroup.jeu.MyApplication</param-value>
+			<param-value>com.thalesgroup.jeu.MyResource</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
