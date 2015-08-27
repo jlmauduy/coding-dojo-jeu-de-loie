@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import exceptions.JoueurExisteDejaException;
+
 public class TestJeuDelOie {
 
     private JeuDelOie jeu;
@@ -69,7 +71,7 @@ public class TestJeuDelOie {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = JoueurExisteDejaException.class)
     public void testAjoutDoublePseudo() {
         String pseudo = "kevin93";
         jeu.addJoueur(pseudo);
@@ -174,6 +176,13 @@ public class TestJeuDelOie {
         jeu.jouer(pseudo, 6);
 
         assertEquals(36, joueur.getPosition());
+    }
+
+    @Test
+    public void testReset() {
+        jeu.addJoueur("claude");
+        jeu.resetJoueurs();
+        assertEquals(0, jeu.getJoueurs().size());
     }
 
 }

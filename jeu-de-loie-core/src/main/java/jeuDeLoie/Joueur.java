@@ -6,6 +6,10 @@ public class Joueur {
 
     private String pseudo;
 
+    public Joueur() {
+        super();
+    }
+
     public Joueur(String pseudo) {
         this.pseudo = pseudo;
         this.position = 0;

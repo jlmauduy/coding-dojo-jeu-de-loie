@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import exceptions.JoueurExisteDejaException;
+
 public class JeuDelOie {
 
     private static final int MAX_VALEUR_DE = 6;
@@ -35,10 +37,10 @@ public class JeuDelOie {
         this.plateau = plateau;
     }
 
-    public Joueur addJoueur(String pseudo) {
+    public Joueur addJoueur(String pseudo) throws JoueurExisteDejaException {
         Joueur nouveauJoueur = new Joueur(pseudo);
         if (joueurs.containsKey(pseudo)) {
-            throw new IllegalArgumentException("Le joueur a déjà été ajouté.");
+            throw new JoueurExisteDejaException(pseudo);
         }
         joueurs.put(pseudo, nouveauJoueur);
         return nouveauJoueur;
@@ -122,5 +124,9 @@ public class JeuDelOie {
 
     private void logEtatJoueur(String pseudo, String message) {
         System.out.println(MessageFormat.format("[{0}] {1}", pseudo, message));
+    }
+
+    public void resetJoueurs() {
+        joueurs.clear();
     }
 }
