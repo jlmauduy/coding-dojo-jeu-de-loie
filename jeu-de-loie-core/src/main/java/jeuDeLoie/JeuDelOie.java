@@ -8,17 +8,21 @@ import java.util.Map;
 import java.util.Random;
 
 import exceptions.JoueurExisteDejaException;
+import exceptions.PartieDemarreException;
 
 public class JeuDelOie {
 
     private static final int MAX_VALEUR_DE = 6;
 
-    // FIXME changer la liste en map, pour changer la fonction getJoueurFromPseudo
     private Map<String, Joueur> joueurs;
+
+    private Map<String, Deplacement> deplacements;
 
     private static JeuDelOie instance;
 
     private Plateau plateau;
+
+    private boolean partieDemarree = false;
 
     private JeuDelOie() {
 
@@ -34,10 +38,15 @@ public class JeuDelOie {
 
     JeuDelOie(Plateau plateau) {
         joueurs = new HashMap<String, Joueur>();
+        deplacements = new HashMap<String, Deplacement>();
         this.plateau = plateau;
     }
 
-    public Joueur addJoueur(String pseudo) throws JoueurExisteDejaException {
+    public Joueur addJoueur(String pseudo) throws JoueurExisteDejaException, PartieDemarreException {
+        if (partieDemarree) {
+            throw new PartieDemarreException(pseudo);
+        }
+
         Joueur nouveauJoueur = new Joueur(pseudo);
         if (joueurs.containsKey(pseudo)) {
             throw new JoueurExisteDejaException(pseudo);
@@ -73,17 +82,21 @@ public class JeuDelOie {
         return !joueurs.isEmpty() && joueurs.size() > 1;
     }
 
-    public void jouer(String pseudo) {
+    public Deplacement jouer(String pseudo) {
         // Lancer le dé
         int rand = new Random().nextInt(MAX_VALEUR_DE) + 1;
 
         // Jouer
-        jouer(pseudo, rand);
+        return jouer(pseudo, rand);
     }
 
-    void jouer(String pseudo, int lanceDe) {
-
+    Deplacement jouer(String pseudo, int lanceDe) {
         Joueur joueur = getJoueurFromPseudo(pseudo);
+
+        if (!partieDemarree) {
+            partieDemarree = true;
+        }
+
         // position du joueur
         int positionInitiale = joueur.getPosition();
 
@@ -95,6 +108,12 @@ public class JeuDelOie {
         int positionResolue = resolutionComplete(positionCourante, pseudo);
 
         joueur.setPosition(positionResolue);
+
+        Deplacement deplacement = new Deplacement(pseudo, positionInitiale, positionResolue);
+
+        deplacements.put(deplacement.getId().toString(), deplacement);
+
+        return deplacement;
     }
 
     private int resolutionComplete(int positionCourante, String pseudo) {
@@ -126,7 +145,13 @@ public class JeuDelOie {
         System.out.println(MessageFormat.format("[{0}] {1}", pseudo, message));
     }
 
-    public void resetJoueurs() {
+    public void reset() {
         joueurs.clear();
+        deplacements.clear();
+        partieDemarree = false;
+    }
+
+    public Deplacement getDeplacement(String id) {
+        return deplacements.get(id);
     }
 }

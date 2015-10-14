@@ -11,12 +11,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import jeuDeLoie.JeuDelOie;
 import jeuDeLoie.Joueur;
 import exceptions.JoueurExisteDejaException;
+import exceptions.PartieDemarreException;
 
 /**
  * Example resource class hosted at the URI path "/myresource"
@@ -37,14 +40,19 @@ public class ResourceJoueurs {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPlayer(String pseudo) throws URISyntaxException {
+    public Response addPlayer(String pseudo, @Context UriInfo uriInfo) throws URISyntaxException,
+            PartieDemarreException {
         JeuDelOie jeuDeLoie = JeuDelOie.getInstance();
 
         try {
             jeuDeLoie.addJoueur(pseudo);
-            return Response.created(new URI(pseudo)).build();
+            URI uri = uriInfo.getAbsolutePathBuilder().path(pseudo).build();
+            return Response.created(uri).build();
         } catch (JoueurExisteDejaException ex) {
             return Response.status(Response.Status.CONFLICT).entity(ex.getMessage()).build();
+        } catch (PartieDemarreException e) {
+            // TODO : Gerer l'exception
+            throw e;
         }
     }
 
@@ -56,13 +64,5 @@ public class ResourceJoueurs {
 
         return joueurs;
     }
-
-    // @POST
-    // @Produces("text/plain")
-    // @Path("/joueurs/{monParam}")
-    // public void foo(@Context HttpServletRequest request, @Context HttpServletResponse response,
-    // @PathParam("monParam") String monPram) {
-    //
-    // }
 
 }

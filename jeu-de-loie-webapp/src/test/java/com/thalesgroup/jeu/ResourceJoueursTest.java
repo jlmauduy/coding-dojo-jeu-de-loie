@@ -1,5 +1,7 @@
 package com.thalesgroup.jeu;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +19,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import exceptions.JoueurExisteDejaException;
+import exceptions.PartieDemarreException;
+
 public class ResourceJoueursTest extends AbstractResourceTest {
 
     @Before
@@ -25,7 +30,7 @@ public class ResourceJoueursTest extends AbstractResourceTest {
         super.setUp();
 
         // clear jeudeloie from current JVM
-        JeuDelOie.getInstance().resetJoueurs();
+        JeuDelOie.getInstance().reset();
     }
 
     @Test
@@ -41,20 +46,35 @@ public class ResourceJoueursTest extends AbstractResourceTest {
         WebTarget target = client.target(JOUEURS_RS_URL);
         // insertion
         Response response = target.request().post(Entity.entity(PRO_GAMER, MediaType.APPLICATION_JSON));
-
         Assert.assertEquals(Status.CREATED.getStatusCode(), response.getStatus());
+        Assert.assertNotNull(response.getLocation());
     }
 
     @Test
-    public void testGetPlayerRessourceConnue() {
+    public void testRetrievePlayerRessource() {
+        WebTarget targetPost = client.target(JOUEURS_RS_URL);
+        Response responsePost = targetPost.request().post(Entity.entity(PRO_GAMER, MediaType.APPLICATION_JSON));
+
+        WebTarget targetGet = client.target(responsePost.getLocation());
+        Response responseGet = targetGet.request().get();
+        Assert.assertEquals(Status.OK.getStatusCode(), responseGet.getStatus());
+    }
+
+    @Test
+    public void testGetPlayerRessourceConnue() throws JoueurExisteDejaException, PartieDemarreException {
         JeuDelOie.getInstance().addJoueur(PRO_GAMER);
         WebTarget targetGet = client.target(JOUEURS_RS_URL + "/" + PRO_GAMER);
+
         Response response = targetGet.request().get();
-        Assert.assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+
+        Joueur joueur = response.readEntity(Joueur.class);
+        assertEquals(PRO_GAMER, joueur.getPseudo());
+
     }
 
     @Test
-    public void testGetListeJoueurs() {
+    public void testGetListeJoueurs() throws JoueurExisteDejaException, PartieDemarreException {
         JeuDelOie.getInstance().addJoueur(PRO_GAMER);
         JeuDelOie.getInstance().addJoueur(NOOB);
 
@@ -70,7 +90,7 @@ public class ResourceJoueursTest extends AbstractResourceTest {
     }
 
     @Test
-    public void testCreate2PlayerRessource() {
+    public void testCreate2PlayerRessource() throws JoueurExisteDejaException, PartieDemarreException {
         WebTarget target = client.target(JOUEURS_RS_URL);
         // insertion
         JeuDelOie.getInstance().addJoueur(PRO_GAMER);
@@ -78,19 +98,4 @@ public class ResourceJoueursTest extends AbstractResourceTest {
 
         Assert.assertEquals(Status.CONFLICT.getStatusCode(), response.getStatus());
     }
-
-    /*
-     * @Test public void testGetPlayersWithOneAddedPlayer() throws Exception { Client client =
-     * ClientBuilder.newClient();
-     * 
-     * WebTarget target = client.target(JOUEURS_RS_URL);
-     * 
-     * // 1 - add player target.request().post(Entity.entity("kevin93", MediaType.APPLICATION_JSON));
-     * 
-     * // 2 - get players Response response = target.request(MediaType.APPLICATION_JSON).get(); Assert.assertEquals(200,
-     * response.getStatus()); List<Joueur> joueurs = response.readEntity(new GenericType<List<Joueur>>() { });
-     * 
-     * Assert.assertEquals(1, joueurs.size()); Assert.assertEquals("kevin93", joueurs.get(0).getPseudo()); }
-     */
-
 }
